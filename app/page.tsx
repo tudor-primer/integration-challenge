@@ -105,6 +105,14 @@ const initializePrimerCheckout = async (data: any) => {
       return;
     }
 
+    if (typeof document !== "undefined") {
+      const checkoutElement = document.getElementById("checkout");
+      if (checkoutElement) {
+        checkoutElement.innerHTML = "";
+        console.log("checkoutElement", checkoutElement);
+      }
+    }
+
     console.log("clientSessionData", clientToken);
 
     await Primer.showUniversalCheckout(clientToken, {
@@ -122,12 +130,12 @@ const initializePrimerCheckout = async (data: any) => {
 export default function Home() {
   const [productAmount, setProductAmount] = useState(1000.0);
   const [currency, setCurrency] = useState("EUR");
-  const [clientInfo, setClientInfo] = useState({
+  const [clientInfo, setClientInfo] = useState(() => ({
     firstName: "John",
     lastName: "Smith",
     address: "Real address 33"
-  });
-  const [metadata, setMetadata] = useState("");
+  }));
+  const [metadata, setMetadata] = useState("scenario=PAYPAL");
 
   useEffect(() => {
     initializePrimerCheckout({
@@ -136,7 +144,10 @@ export default function Home() {
       clientInfo: clientInfo,
       metadata: parseTextareaValue(metadata)
     });
+    toast.success("Initialized Primer Checkout");
   }, []);
+
+  console.log("test");
 
   return (
     <main className="flex min-h-screen flex-col items-center gap-10 p-10">
@@ -234,6 +245,7 @@ export default function Home() {
                 clientInfo: clientInfo,
                 metadata: parseTextareaValue(metadata)
               });
+              toast.success("Initialized Primer Checkout");
             }}>
             Save details
           </button>
